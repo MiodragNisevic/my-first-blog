@@ -36,3 +36,5 @@ if __name__ == "__main__":
 #  4. napravi .gitignore file i upisi u njega one fajlove koje sad vidis u njemu
 #  5. git add --all, git commit -m "Message"
 #  6. na githubu, new repository, create repository, HTTPS, poslednja 2 reda ukucaj u terminal
+#  ako baguje: windows dugme, credential manager, windows credentials,
+# sifra za github i pythonanywhere je ista
