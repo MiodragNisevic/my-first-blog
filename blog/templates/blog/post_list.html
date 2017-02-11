@@ -7,7 +7,9 @@
             <div class="date">
                 {{ post.published_date }}
             </div>
-            <h1><a href="">{{ post.title }}</a></h1>
+            <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
+            {#         pk je primary key. ako mi Modelu ne dodelimo primary key, Django mu ga dodeli sam i nazove to polje pk#}
+            {#         'post_detail' je name koji cu dodeliti odgovarajucem url-u u blog/urls.py #}
             <p>{{ post.text|linebreaksbr }}</p>
         </div>
     {% endfor %}
