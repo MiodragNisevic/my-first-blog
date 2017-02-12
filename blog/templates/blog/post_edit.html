@@ -1,0 +1,19 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+    <h1>New Post</h1>
+
+    <form method="post" class="post-form">
+{#         Django forma ne zahteva action="" atribut, zato sto kad uradis post, salje se ka istom view-u      #}
+{#        (pandan laravel controlera) koji je korisnika doveo na ovu stranicu    #}
+        {% csrf_token %}
+        {{ form.as_p }}
+                {#   {{ form.as_table }} will render them as table cells wrapped in <tr> tags   #}
+                {#  {{ form.as_p }} will render them wrapped in <p> tags                          #}
+                {#  {{ form.as_ul }} will render them wrapped in <li> tags                       #}
+        <button type="submit" class="save btn btn-default">Save</button>
+
+    </form>
+
+{% endblock %}
