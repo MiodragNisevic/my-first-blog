@@ -14,4 +14,5 @@ urlpatterns = [
     # \d also tells us that it can only be a digit, not a letter (so everything between 0 and 9).
     # + means that there needs to be one or more digits there
     url(r'^post/new/$', views.post_new, name='post_new'),
+    url(r'^post/(?P<pk>\d+)/edit/$', views.post_edit, name='post_edit'),
 ]
