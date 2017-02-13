@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post
 from django.utils import timezone
-from .forms import PostForm
+from .forms import PostForm, EmployeeForm
+from django.core.files import File
 
 
 def post_list(request):
@@ -51,7 +52,31 @@ def post_edit(request, pk):
         form = PostForm(instance=post)
         return render(request, 'blog/post_edit.html', {'form': form})
 
+
 def post_delete(request, pk):
     post = get_object_or_404(Post, pk=pk)
     post.delete()
     return redirect('post_list')
+
+
+def employee(request):
+    if request.method == "POST":
+        form = EmployeeForm(request.POST)
+        if form.is_valid():
+            with open('employee.txt', 'w') as f:
+                myfile = File(f)
+                myfile.write('{first_name} ... {last_name} ... {email} ... {password} ' .format(**form.cleaned_data))
+        #  ili:       myfile.write('%s ... %s ... %s ... %s ' % (form.cleaned_data['first_name'],
+        #                   form.cleaned_data['last_name'], form.cleaned_data['email'], form.cleaned_data['password']))
+
+        # ili more safely: myfile.write('%s ... %s ... %s ... %s ' % (form.cleaned_data('first_name', ''),
+        #                   form.cleaned_data('last_name', ''),
+        # form.cleaned_data('email', ''), form.cleaned_data('password', ''))
+        # which will return an empty string instead of raising an exception if the field is not present in the form.
+
+        # ili: myfile.write('%(first_name)s ... %(last_name)s ... %(email)s ... %(password)s' % form.cleaned_data)
+
+        return render(request, 'blog/employee_thanks.html')
+    else:
+        form = EmployeeForm
+    return render(request, 'blog/employee.html', {'form': form})

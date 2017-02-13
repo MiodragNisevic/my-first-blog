@@ -19,3 +19,10 @@ class PostForm(forms.ModelForm):
 # Finally, we can say which field(s) should end up in our form. In this scenario we want only title and text to be
 # exposed – author should be the person who is currently logged in (you!)
 # and created_date should be automatically set when we create a post (i.e. in the code), right?
+
+
+class EmployeeForm(forms.Form):
+    first_name = forms.CharField(max_length=30)
+    last_name = forms.CharField(max_length=30)
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput())
