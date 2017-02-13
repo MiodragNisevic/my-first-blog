@@ -63,9 +63,9 @@ def employee(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST)
         if form.is_valid():
-            with open('employee.txt', 'w') as f:
+            with open('employee.txt', 'a') as f:
                 myfile = File(f)
-                myfile.write('{first_name} ... {last_name} ... {email} ... {password} ' .format(**form.cleaned_data))
+                myfile.write('{first_name} ... {last_name} ... {email} ... {password}... ' .format(**form.cleaned_data))
         #  ili:       myfile.write('%s ... %s ... %s ... %s ' % (form.cleaned_data['first_name'],
         #                   form.cleaned_data['last_name'], form.cleaned_data['email'], form.cleaned_data['password']))
 
