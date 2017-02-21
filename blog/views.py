@@ -3,10 +3,11 @@ from .models import Post
 from django.utils import timezone
 from .forms import PostForm, EmployeeForm
 from django.core.files import File
+from django.contrib.auth.decorators import login_required
 
 
 def post_list(request):
-    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date') # minus oznacava desc.
+    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date') # minus oznacava desc. a ovaj filter sluzi da predstavi samo published
     return render(request, 'blog/post_list.html', {'posts': posts})    #drugi argument je template, trazice ga automatski u templates subfolderu koji treba da napravis, a onda blog subfolder i fajl post_list.html
 
 
@@ -20,6 +21,7 @@ def post_detail(request, pk):
 # first, when we access the page for the first time and we want a blank form,
 # and second, when we go back to the view with all form data we just typed.
 #  So we need to add a condition (we will use if for that):
+@login_required
 def post_new(request):
     if request.method == "POST":
         form = PostForm(request.POST)
@@ -28,7 +30,7 @@ def post_new(request):
             #commit=False means that we don't want to save the Post model yet – we want to add the author first
             #  Most of the time you will use form.save() without commit=False
             post.author = request.user
-            post.published_date = timezone.now()
+            # post.published_date = timezone.now()  ako ga odkomentujem, odmah se publishuje. ovako ide u drafts
             # autora i published_date moram ovako da ubacim jer oni nisu medju elementima forme koje user upisuje
             post.save()
     #         ako se pitas kako je znao da to snimi bas u Post model, pogledaj file forms.py i u njemu PostForm
@@ -38,6 +40,7 @@ def post_new(request):
     return render(request, 'blog/post_edit.html', {'form': form})
 
 
+@login_required
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
@@ -45,7 +48,7 @@ def post_edit(request, pk):
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
-            post.published_date = timezone.now()
+            # post.published_date = timezone.now() ako ga odkomentujem, odmah se publishuje. ovako ide u drafts
             post.save()
             return redirect('post_list')
     else:
@@ -53,12 +56,27 @@ def post_edit(request, pk):
         return render(request, 'blog/post_edit.html', {'form': form})
 
 
+@login_required
 def post_delete(request, pk):
     post = get_object_or_404(Post, pk=pk)
     post.delete()
     return redirect('post_list')
 
 
+@login_required
+def post_draft_list(request):
+    posts = Post.objects.filter(published_date__isnull=True).order_by('created_date') #filteruje samo drafts
+    return render(request, 'blog/post_draft_list.html', {'posts': posts})
+
+
+@login_required
+def post_publish(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.publish() #ovaj .publish() metod je napravljen u okviru Post modela u models.py
+    return redirect('post_list')
+
+
+@login_required
 def employee(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST)

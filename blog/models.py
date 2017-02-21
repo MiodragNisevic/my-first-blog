@@ -13,6 +13,7 @@ class Post(models.Model):
     def publish(self):
         self.published_date=timezone.now()
         self.save()
+    #     ovaj metod koristim kasnije u views.py da publishujem draft u okviru post_publish metoda
 
     def __str__(self):
         return self.title
