@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post
+from .models import Post, Comment
 from django.utils import timezone
-from .forms import PostForm, EmployeeForm
+from .forms import PostForm, EmployeeForm, CommentForm
 from django.core.files import File
 from django.contrib.auth.decorators import login_required
 
@@ -74,6 +74,36 @@ def post_publish(request, pk):
     post = get_object_or_404(Post, pk=pk)
     post.publish() #ovaj .publish() metod je napravljen u okviru Post modela u models.py
     return redirect('post_list')
+
+
+def add_comment_to_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False) # False da bih ostale atribute dodao ispod pre nego sto se commituje
+            comment.post = post
+            comment.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form=CommentForm
+    return render(request, 'blog/add_comment_to_post.html', {'form': form})
+
+
+@login_required
+def comment_approve(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    comment.approve()
+    return redirect('post_detail', pk=comment.post.pk)
+
+
+@login_required
+def comment_remove(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    post_pk = comment.post.pk
+    # ovaj red iznad moram jer cu u sledecem redu obrisati comment, pa ne mogu u redirect da kazem pk=comment.post.pk
+    comment.delete()
+    return redirect('post_detail', pk=post_pk)
 
 
 @login_required

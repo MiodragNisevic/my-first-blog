@@ -1,11 +1,12 @@
 from django.contrib import admin
-from .models import Post
+from .models import Post, Comment
 
 # To add, edit and delete the posts we've just modeled, we will use Django admin.
 
 
 admin.site.register(Post)
-# To make our model visible on the admin page,
+admin.site.register(Comment)
+# To make our models visible on the admin page,
 # we need to register the model with admin.site.register(Post).
 
 

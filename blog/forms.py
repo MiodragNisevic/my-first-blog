@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Post, Comment
 
 
 # The nice thing about Django forms is that we can either define one from scratch
@@ -19,6 +19,13 @@ class PostForm(forms.ModelForm):
 # Finally, we can say which field(s) should end up in our form. In this scenario we want only title and text to be
 # exposed – author should be the person who is currently logged in (you!)
 # and created_date should be automatically set when we create a post (i.e. in the code), right?
+
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ('author', 'text',)
 
 
 class EmployeeForm(forms.Form):
